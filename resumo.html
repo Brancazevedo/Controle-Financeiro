@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Análise de Compras - Crédito e Débito</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .card {
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .stat-card {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8">
+      <header class="mb-10 text-center">
+        <h1 class="text-3xl font-bold text-indigo-700 mb-2">
+          Análise de Compras
+        </h1>
+        <p class="text-gray-600">Estatísticas separadas por Crédito e Débito</p>
+      </header>
+
+      <!-- Sessão Crédito -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-indigo-600 mb-4">💳 Crédito</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="card stat-card rounded-xl p-6 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              Maior Compra
+            </h3>
+            <div v-if="creditoStats.maiorCompra">
+              <p class="text-2xl font-bold">
+                R$ {{ formatarValor(creditoStats.maiorCompra.valor) }}
+              </p>
+              <p class="text-gray-700">{{ creditoStats.maiorCompra.nome }}</p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(creditoStats.maiorCompra.data) }}
+              </p>
+            </div>
+            <p v-else class="text-gray-500 italic">Nenhuma compra</p>
+          </div>
+
+          <div class="card stat-card rounded-xl p-6 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              Menor Compra
+            </h3>
+            <div v-if="creditoStats.menorCompra">
+              <p class="text-2xl font-bold">
+                R$ {{ formatarValor(creditoStats.menorCompra.valor) }}
+              </p>
+              <p class="text-gray-700">{{ creditoStats.menorCompra.nome }}</p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(creditoStats.menorCompra.data) }}
+              </p>
+            </div>
+            <p v-else class="text-gray-500 italic">Nenhuma compra</p>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">
+            Compras por Mês
+          </h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Mês
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Qtd
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Total
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Média
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(mes, chave) in creditoStats.comprasPorMes"
+                :key="chave"
+                class="border-t"
+              >
+                <td class="px-4 py-2">{{ mes.mes }}</td>
+                <td class="px-4 py-2">{{ mes.quantidade }}</td>
+                <td class="px-4 py-2">R$ {{ formatarValor(mes.total) }}</td>
+                <td class="px-4 py-2">
+                  R$ {{ formatarValor(mes.total / mes.quantidade) }}
+                </td>
+              </tr>
+              <tr v-if="Object.keys(creditoStats.comprasPorMes).length === 0">
+                <td colspan="4" class="text-center text-gray-500 italic py-4">
+                  Sem dados
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Sessão Débito -->
+      <section>
+        <h2 class="text-2xl font-bold text-green-600 mb-4">💵 Débito</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="card stat-card rounded-xl p-6 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              Maior Compra
+            </h3>
+            <div v-if="debitoStats.maiorCompra">
+              <p class="text-2xl font-bold">
+                R$ {{ formatarValor(debitoStats.maiorCompra.valor) }}
+              </p>
+              <p class="text-gray-700">{{ debitoStats.maiorCompra.nome }}</p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(debitoStats.maiorCompra.data) }}
+              </p>
+            </div>
+            <p v-else class="text-gray-500 italic">Nenhuma compra</p>
+          </div>
+
+          <div class="card stat-card rounded-xl p-6 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              Menor Compra
+            </h3>
+            <div v-if="debitoStats.menorCompra">
+              <p class="text-2xl font-bold">
+                R$ {{ formatarValor(debitoStats.menorCompra.valor) }}
+              </p>
+              <p class="text-gray-700">{{ debitoStats.menorCompra.nome }}</p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(debitoStats.menorCompra.data) }}
+              </p>
+            </div>
+            <p v-else class="text-gray-500 italic">Nenhuma compra</p>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-xl p-6 shadow-md">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">
+            Compras por Mês
+          </h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Mês
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Qtd
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Total
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Média
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(mes, chave) in debitoStats.comprasPorMes"
+                :key="chave"
+                class="border-t"
+              >
+                <td class="px-4 py-2">{{ mes.mes }}</td>
+                <td class="px-4 py-2">{{ mes.quantidade }}</td>
+                <td class="px-4 py-2">R$ {{ formatarValor(mes.total) }}</td>
+                <td class="px-4 py-2">
+                  R$ {{ formatarValor(mes.total / mes.quantidade) }}
+                </td>
+              </tr>
+              <tr v-if="Object.keys(debitoStats.comprasPorMes).length === 0">
+                <td colspan="4" class="text-center text-gray-500 italic py-4">
+                  Sem dados
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="text-center mt-8">
+        <button
+          @click="carregarEstatisticas"
+          class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+        >
+          Atualizar Dados
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, ref } = Vue;
+
+      createApp({
+        setup() {
+          const creditoStats = ref({
+            maiorCompra: null,
+            menorCompra: null,
+            comprasPorMes: {},
+          });
+          const debitoStats = ref({
+            maiorCompra: null,
+            menorCompra: null,
+            comprasPorMes: {},
+          });
+
+          function calcularEstatisticas(lista) {
+            if (lista.length === 0)
+              return {
+                maiorCompra: null,
+                menorCompra: null,
+                comprasPorMes: {},
+              };
+
+            const maiorCompra = lista.reduce((a, b) =>
+              a.valor > b.valor ? a : b
+            );
+            const menorCompra = lista.reduce((a, b) =>
+              a.valor < b.valor ? a : b
+            );
+
+            const comprasPorMes = {};
+            lista.forEach((item) => {
+              const data = new Date(item.data);
+              const chave = `${data.getMonth() + 1}/${data.getFullYear()}`;
+              const mesFormatado = data.toLocaleString("pt-BR", {
+                month: "long",
+                year: "numeric",
+              });
+              if (!comprasPorMes[chave]) {
+                comprasPorMes[chave] = {
+                  total: 0,
+                  quantidade: 0,
+                  mes: mesFormatado,
+                };
+              }
+              comprasPorMes[chave].total += item.valor;
+              comprasPorMes[chave].quantidade += 1;
+            });
+
+            return { maiorCompra, menorCompra, comprasPorMes };
+          }
+
+          function carregarEstatisticas() {
+            const listacredito = JSON.parse(
+              localStorage.getItem("listacredito") || "[]"
+            );
+            const listadebito = JSON.parse(
+              localStorage.getItem("listadebito") || "[]"
+            );
+
+            creditoStats.value = calcularEstatisticas(listacredito);
+            debitoStats.value = calcularEstatisticas(listadebito);
+          }
+
+          function formatarValor(v) {
+            return v?.toFixed(2).replace(".", ",") || "0,00";
+          }
+
+          function formatarData(dataStr) {
+            return new Date(dataStr).toLocaleDateString("pt-BR");
+          }
+
+          carregarEstatisticas();
+
+          return {
+            creditoStats,
+            debitoStats,
+            formatarValor,
+            formatarData,
+            carregarEstatisticas,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>controle</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1 class="title">
+        Controle de gastos
+        <button class="resumo" @click="irParaResumo">Resumo dos gastos</button>
+      </h1>
+      <div class="container">
+        <div class="tablecredito">
+          <h2 class="credito">
+            Seus gastos no Crédito
+            <hr />
+            <input
+              type="text"
+              class="creditonome"
+              v-model="credito.nome"
+              placeholder="Digite o gasto"
+            />
+            <input
+              type="number"
+              v-model="credito.valor"
+              placeholder="Valor da parcela"
+              class="valorCredito"
+            />
+            <input
+              type="number"
+              v-model="credito.parcelas"
+              placeholder="Parcela atual"
+              class="parcela"
+            />
+            <input type="date" v-model="credito.data" class="data" />
+
+            <input
+              type="button"
+              @click="addCredito"
+              value="Adicionar Crédito"
+              class="salvarC"
+            />
+            <div class="ordenacaocredito">
+              <button @click="ordenarCreditoPorValor">Ordenar por Valor</button>
+              <button @click="ordenarCreditoPorData">Ordenar por Data</button>
+              <button @click="ordenarCreditoPorNome">Ordenar por Nome</button>
+              <button @click="ordenarCreditoPorParcelas">
+                Ordenar por parcelas
+              </button>
+            </div>
+          </h2>
+        </div>
+
+        <div class="tabledebito">
+          <h2 class="debito">
+            Seus gastos no Débito
+            <hr />
+            <input
+              type="text"
+              class="creditonome"
+              v-model="debito.nome"
+              placeholder="Digite o gasto"
+            />
+            <input
+              type="number"
+              v-model="debito.valor"
+              placeholder="Valor"
+              class="valorCredito"
+            />
+            <input
+              type="text"
+              v-model="debito.metodo"
+              placeholder=" debito ou pix?"
+              class="pag"
+            />
+            <input type="date" v-model="debito.data" class="data" />
+            <input
+              type="button"
+              @click="addDebito"
+              value="salvar gasto"
+              class="salvarD"
+            />
+            <div class="ordenacaodebito">
+              <button @click="ordenarDebitoPorValor">
+                Ordenar Débito por Valor
+              </button>
+              <button @click="ordenarDebitoPorData">
+                Ordenar Débito por Data
+              </button>
+              <button @click="ordenarDebitoPorNome" class="name">
+                Ordenar Débito por Nome
+              </button>
+            </div>
+          </h2>
+        </div>
+      </div>
+      <div class="containertabelas">
+        <table class="listacredito">
+          <thead>
+            <tr>
+              <th>nome</th>
+              <th>Valor</th>
+              <th>Parcela</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in listacredito" :key="'credito-'+index">
+              <td>{{ item.nome }}</td>
+              <td>R$ {{ item.valor.toFixed(2).replace('.', ',') }}</td>
+              <td>{{ item.parcelas }}</td>
+              <td>{{ formatarData(item.data) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="listadebito">
+          <thead>
+            <tr>
+              <th>nome</th>
+              <th>Metodo</th>
+              <th>data</th>
+              <th>valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in listadebito" :key="'debito-'+index">
+              <td>{{ item.nome }}</td>
+              <td>{{ item.metodo }}</td>
+              <td class="money">R$ {{ item.valor.toFixed(2) }}</td>
+
+              <td>{{ formatarData(item.data) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="js/app.js"></script>
+</html>
