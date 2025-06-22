@@ -175,8 +175,6 @@ createApp({
         window.location.href = "resumo.html";
       }, 100);
 
-      // Ou se estiver usando Vue Router:
-      // this.$router.push('/resumo');
     },
   },
 }).mount("#app");
