@@ -73,7 +73,7 @@ createApp({
 
     // Adição do débito
     const addDebito = () => {
-      debitoError.value = validarCampos(debito.value, "debito"); // Adicione o tipo 'debito'
+      debitoError.value = validarCampos(debito.value, "debito");
       if (debitoError.value) return;
 
       listadebito.value = [
@@ -81,7 +81,7 @@ createApp({
         {
           nome: debito.value.nome,
           valor: parseFloat(debito.value.valor),
-          metodo: debito.value.metodo || "Não especificado", // Certifique-se que está usando debito.metodo
+          metodo: debito.value.metodo || "Não especificado", 
           data: debito.value.data,
         },
       ];
@@ -96,12 +96,12 @@ createApp({
         return ordemValorCredito.value === "asc" ? resultado : -resultado;
       });
       ordemValorCredito.value =
-        ordemValorCredito.value === "asc" ? "desc" : "asc"; // Alternar a ordem
+        ordemValorCredito.value === "asc" ? "desc" : "asc"; 
       localStorage.setItem("listacredito", JSON.stringify(listacredito.value));
     };
     const ordenarCreditoPorData = () => {
       listacredito.value.sort((a, b) => new Date(a.data) - new Date(b.data));
-      ordemDataCredito.value = "desc"; // Definir como crescente
+      ordemDataCredito.value = "desc"; 
       localStorage.setItem("listacredito", JSON.stringify(listacredito.value));
     };
     const ordenarCreditoPorNome = () => {
@@ -110,7 +110,7 @@ createApp({
         return ordemNomeCredito.value === "asc" ? resultado : -resultado;
       });
       ordemNomeCredito.value =
-        ordemNomeCredito.value === "asc" ? "desc" : "asc"; // Alternar a ordem
+        ordemNomeCredito.value === "asc" ? "desc" : "asc"; 
       localStorage.setItem("listacredito", JSON.stringify(listacredito.value));
     };
     const ordenarCreditoPorParcelas = () => {
@@ -119,7 +119,7 @@ createApp({
         return ordemParcelasCredito.value === "asc" ? resultado : -resultado;
       });
       ordemParcelasCredito.value =
-        ordemParcelasCredito.value === "asc" ? "desc" : "asc"; // Alternar a ordem
+        ordemParcelasCredito.value === "asc" ? "desc" : "asc"; 
       localStorage.setItem("listacredito", JSON.stringify(listacredito.value));
     };
 
@@ -130,12 +130,12 @@ createApp({
         return ordemValorDebito.value === "asc" ? resultado : -resultado;
       });
       ordemValorDebito.value =
-        ordemValorDebito.value === "asc" ? "desc" : "asc"; // Alternar a ordem
+        ordemValorDebito.value === "asc" ? "desc" : "asc"; 
       localStorage.setItem("listadebito", JSON.stringify(listadebito.value));
     };
     const ordenarDebitoPorData = () => {
       listadebito.value.sort((a, b) => new Date(a.data) - new Date(b.data));
-      ordemDataDebito.value = "desc"; // Definir como crescente
+      ordemDataDebito.value = "desc"; 
       localStorage.setItem("listadebito", JSON.stringify(listadebito.value));
     };
     const ordenarDebitoPorNome = () => {
@@ -143,7 +143,7 @@ createApp({
         const resultado = a.nome.localeCompare(b.nome);
         return ordemNomeDebito.value === "asc" ? resultado : -resultado;
       });
-      ordemNomeDebito.value = ordemNomeDebito.value === "asc" ? "desc" : "asc"; // Alternar a ordem
+      ordemNomeDebito.value = ordemNomeDebito.value === "asc" ? "desc" : "asc"; 
       localStorage.setItem("listadebito", JSON.stringify(listadebito.value));
     };
     carregarDados();
@@ -169,10 +169,8 @@ createApp({
   },
   methods: {
     irParaResumo() {
-      // Adiciona classe de transição
       document.body.classList.add("page-transition");
 
-      // Redireciona após o efeito
       setTimeout(() => {
         window.location.href = "resumo.html";
       }, 100);
