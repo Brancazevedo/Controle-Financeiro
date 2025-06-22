@@ -1,4 +1,4 @@
-# Controle-
+# Controle-Financeiro
 🚀 Apresentando meu novo projeto: um site simples e eficiente para controle financeiro pessoal!
 
 Criado para quem quer ter clareza nas finanças sem depender de planilhas complexas, o site permite que você:
